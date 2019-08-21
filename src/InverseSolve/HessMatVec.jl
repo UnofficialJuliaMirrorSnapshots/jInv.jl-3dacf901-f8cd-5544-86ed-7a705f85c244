@@ -57,7 +57,7 @@ function HessMatVec(x,
 #=
    Hessian includes forward problem all stored on current worker
 =#
-    try
+    # try
         sigma,dsigma = pMis.modelfun(sig)
 
         sigmaloc = interpGlobalToLocal(sigma,pMis.gloc.PForInv,pMis.gloc.sigmaBackground)
@@ -67,13 +67,13 @@ function HessMatVec(x,
         JTxloc   = getSensTMatVec(Jx,sigmaloc,pMis.pFor)
         JTx      = dsigma'*interpLocalToGlobal(JTxloc,pMis.gloc.PForInv) # =
         return JTx
-    catch err
-        if isa(err,InterruptException)
-            return -1
-        else
-            throw(err)
-        end
-    end
+    # catch err
+        # if isa(err,InterruptException)
+            # return -1
+        # else
+            # throw(err)
+        # end
+    # end
 end
 
 
@@ -88,7 +88,7 @@ function HessMatVec(xRef::RemoteChannel,
 
     rrlocs = [xRef.where pMisRef.where sigmaRef.where d2FRef.where mvRef.where]
     if !all(rrlocs .== myid())
-        warn("HessMatVec: Problem on worker $(myid()) not all remote refs are stored here, but rrlocs=$rrlocs")
+        println("WARNING: HessMatVec: Problem on worker ",myid()," not all remote refs are stored here, but rrlocs=",rrlocs);
     end
 
     # fetching and taking: should be no-ops as all RemoteRefs live on my worker
